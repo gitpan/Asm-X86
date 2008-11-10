@@ -1,0 +1,20 @@
+Changes
+MANIFEST
+META.yml # Will be created by "make dist"
+Makefile.PL
+README
+lib/Asm/X86.pm
+t/00-load.t
+t/boilerplate.t
+t/pod-coverage.t
+t/pod.t
+t/zz_addr_att.t
+t/zz_addr_intel.t
+t/zz_addr_mixed.t
+t/zz_conv.t
+t/zz_instr_att.t
+t/zz_instr_intel.t
+t/zz_instr_mixed.t
+t/zz_regs_att.t
+t/zz_regs_intel.t
+t/zz_regs_mixed.t

@@ -1,0 +1,76 @@
+Revision history for Asm-X86
+
+2008-11-09	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.07:
+	  Documentation fixes.
+	  Verified instruction list to be complete with fasm-1.67.28 and
+	  updated it from nasm-2.05.01.
+
+2008-10-24	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.06:
+	  Updated instruction list from fasm-1.67.27. Changed double to
+	  single quotes in one place.
+
+2008-05-18	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.05:
+	  A bit better coding style.
+	  Added the tests to the package.
+
+2008-04-17	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.04:
+	  Added functions checking if the given string represents a register
+	   in AT&T syntax. Renamed the previous functions with an "_intel"
+	   suffix and the new functions with an "_att" suffix. Old
+	   functions (the ones with no suffixes) now check for either Intel
+	   or AT&T syntax, so they remain valid.
+	  Added return value to function descriptions.
+	  Added arrays with AT&T-style register names.
+	  Updated instruction list from the latest FASM source.
+	  Added AT&T-style instruction mnemonic array.
+	  Added functions for checking if a given string represents a
+	   valid 16-/32-/64-bit addressing mode in AT&T syntax.
+	   Renamed the previous functions with an "_intel" suffix and the
+	   new functions with an "_att" suffix. Old functions (the ones
+	   with no suffixes) now check for either Intel or AT&T syntax,
+	   so they remain valid.
+	  Changed Intel syntax addressing analysis to check if the whole given
+	   string is correct (using ^ and $ in regular expressions).
+	  Added functions to convert an addressing mode or instruction (with
+	   all its operands) between AT&T and Intel syntaxes.
+	  Added functions to convert an instruction or memory addressing mode
+	   between Intel and AT&T syntaxes.
+	  Converted subroutine names to prototypes.
+	  Added the compile-once flag where applicable.
+	  Added PRIVATE to documentation of private non-exported subroutines.
+
+2008-03-29	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.03:
+	  Fixed a bug with 64-bit addressing, where valid addresses of the
+	   form [ebx+r10d] were not recognised properly.
+	  Added the "SUPPORT AND DOCUMENTATION" section from the README file
+	   to the module.
+
+2008-03-27	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.02:
+	  Fixed a bug with the 'fs' segment register.
+	  Added a list of segment registers and a function for checking
+	   if a given string represents a segment register.
+	  Added functions for checking if a given string represents a
+	   valid 16-/32-/64-bit addressing mode.
+	  Added a list of FPU registers and a function for checking
+	   if a given string represents an FPU register.
+
+2008-03-08	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.01:
+	  Includes all known by FASM instruction mnemonics and registers.
+	  Includes functions that check if a given string is a register
+	  (any type or explicit: 8-, 16-, 32-, 64-bit or multimedia) and
+	  functions that check if a given string is a mnemonic.
+
