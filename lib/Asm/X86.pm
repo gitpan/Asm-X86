@@ -33,11 +33,11 @@ Asm::X86 - List of instructions and registers of Intel x86-compatible processors
 
 =head1 VERSION
 
-Version 0.08
+Version 0.09
 
 =cut
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 =head1 DESCRIPTION
 
@@ -92,7 +92,7 @@ between AT&T and Intel syntaxes.
 
 =cut
 
-sub add_percent(@);
+sub add_percent ( @ );
 
 =head2 @regs8_intel
 
@@ -245,7 +245,7 @@ our @regs_mm_att = add_percent @regs_mm_intel;
 =cut
 
 our @regs_intel = ( @regs8_intel, @regs16_intel, @regs32_intel,
-			@regs64_intel, @regs_mm_intel, @regs_fpu_intel);
+			@regs64_intel, @regs_mm_intel, @regs_fpu_intel );
 
 =head2 @regs_att
 
@@ -253,7 +253,8 @@ our @regs_intel = ( @regs8_intel, @regs16_intel, @regs32_intel,
 
 =cut
 
-our @regs_att = ( @regs8_att, @regs16_att, @regs32_att, @regs64_att, @regs_mm_att, @regs_fpu_att);
+our @regs_att = ( @regs8_att, @regs16_att, @regs32_att,
+			@regs64_att, @regs_mm_att, @regs_fpu_att );
 
 
 =head2 @instr_intel
@@ -321,8 +322,9 @@ our @instr_intel = (
 	'jle', 'jmp', 'jmpe', 'jna', 'jnae', 'jnb', 'jnbe', 'jnc', 'jne', 'jng', 'jnge', 'jnl',
 	'jnle', 'jno', 'jnp', 'jns', 'jnz', 'jo', 'jp', 'jpe', 'jpo', 'jrcxz', 'js', 'jz',
 	'lahf', 'lar', 'lddqu', 'ldmxcsr', 'lds', 'lea', 'leave', 'les', 'lfence', 'lfs', 'lgdt',
-	'lgs', 'lidt', 'lldt', 'lmsw', 'loadall', 'loadall286', 'lodsb', 'lodsd', 'lodsq', 'lodsw',
-	'loop', 'loope', 'loopne', 'loopnz', 'loopz', 'lsl', 'lss', 'ltr', 'lzcnt', 'maskmovdqu',
+	'lgs', 'lidt', 'lldt', 'llwpcb', 'lmsw', 'loadall', 'loadall286', 'lodsb', 'lodsd',
+	'lodsq', 'lodsw', 'loop', 'loope', 'loopne', 'loopnz', 'loopz', 'lsl', 'lss', 'ltr',
+	'lwpins', 'lwpval', 'lzcnt', 'maskmovdqu',
 	'maskmovq', 'maxpd', 'maxps', 'maxsd', 'maxss', 'mfence', 'minpd', 'minps', 'minsd',
 	'minss', 'monitor', 'montmul', 'mov', 'movapd', 'movaps', 'movbe', 'movd', 'movddup', 'movdq2q',
 	'movdqa', 'movdqu', 'movhlps', 'movhpd', 'movhps', 'movlhps', 'movlpd', 'movlps', 'movmskpd',
@@ -374,8 +376,8 @@ our @instr_intel = (
 	'setle', 'setna', 'setnae', 'setnb', 'setnbe', 'setnc', 'setne', 'setng', 'setnge',
 	'setnl', 'setnle', 'setno', 'setnp', 'setns', 'setnz', 'seto', 'setp', 'setpe', 'setpo',
 	'sets', 'setz', 'sfence', 'sgdt', 'shl', 'shld', 'shr', 'shrd', 'shufpd', 'shufps', 'sidt',
-	'skinit', 'sldt', 'smi', 'smint', 'smintold', 'smsw', 'sqrtpd', 'sqrtps', 'sqrtsd', 'sqrtss',
-	'stc', 'std', 'stgi', 'sti', 'stmxcsr', 'stosb', 'stosd', 'stosq', 'stosw', 'str', 'sub',
+	'skinit', 'sldt', 'slwpcb', 'smi', 'smint', 'smintold', 'smsw', 'sqrtpd', 'sqrtps', 'sqrtsd',
+	'sqrtss', 'stc', 'std', 'stgi', 'sti', 'stmxcsr', 'stosb', 'stosd', 'stosq', 'stosw', 'str', 'sub',
 	'subpd', 'subps', 'subsd', 'subss', 'svdc', 'svldt', 'svts', 'swapgs', 'syscall', 'sysenter',
 	'sysexit', 'sysret', 'test', 'ucomisd', 'ucomiss', 'ud0', 'ud1', 'ud2', 'ud2a', 'ud2b', 'umov',
 	'unpckhpd', 'unpckhps', 'unpcklpd', 'unpcklps', 'vaddpd', 'vaddps', 'vaddsd', 'vaddss',
@@ -451,7 +453,7 @@ our @instr_intel = (
 	'vperm2f128', 'vpermil2pd', 'vpermil2ps', 'vpermilmo2pd', 'vpermilmo2ps', 'vpermilmz2pd',
 	'vpermilmz2ps', 'vpermilpd', 'vpermilps', 'vpermiltd2pd', 'vpermiltd2ps', 'vpextrb',
 	'vpextrd', 'vpextrq', 'vpextrw', 'vphaddbd', 'vphaddbq', 'vphaddbw', 'vphaddd',
-	'vphadddq', 'vphaddsw', 'vphaddubd', 'vphaddubq', 'vphaddubwd', 'vphaddudq',
+	'vphadddq', 'vphaddsw', 'vphaddubd', 'vphaddubq', 'vphaddubw', 'vphaddubwd', 'vphaddudq',
 	'vphadduwd', 'vphadduwq', 'vphaddw', 'vphaddwd', 'vphaddwq', 'vphminposuw',
 	'vphsubbw', 'vphsubd', 'vphsubdq', 'vphsubsw', 'vphsubw', 'vphsubwd', 'vpinsrb',
 	'vpinsrd', 'vpinsrq', 'vpinsrw', 'vpmacsdd', 'vpmacsdqh', 'vpmacsdql', 'vpmacssdd',
@@ -494,7 +496,7 @@ my @att_suff_instr_fpu = (
 	'fucom', 'fucomp', 'fucompp', 'fucomi', 'fucomip'
 		);
 
-sub add_att_suffix_instr(@);
+sub add_att_suffix_instr ( @ );
 
 =head2 @instr_att
 
@@ -510,7 +512,7 @@ our @instr_att = add_att_suffix_instr @instr_intel;
 
 =cut
 
-our @instr = (@instr_intel, @instr_att);
+our @instr = ( @instr_intel, @instr_att );
 
 =head1 FUNCTIONS
 
@@ -521,10 +523,10 @@ our @instr = (@instr_intel, @instr_att);
 
 =cut
 
-sub is_reg_intel($) {
+sub is_reg_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs_intel) {
+	foreach (@regs_intel) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -537,10 +539,10 @@ sub is_reg_intel($) {
 
 =cut
 
-sub is_reg_att($) {
+sub is_reg_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs_att) {
+	foreach (@regs_att) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -553,10 +555,10 @@ sub is_reg_att($) {
 
 =cut
 
-sub is_reg($) {
+sub is_reg ( $ ) {
 
 	my $elem = shift;
-	return is_reg_intel($elem) | is_reg_att($elem);
+	return is_reg_intel ($elem) | is_reg_att ($elem);
 }
 
 =head2 is_reg8_intel
@@ -566,10 +568,10 @@ sub is_reg($) {
 
 =cut
 
-sub is_reg8_intel($) {
+sub is_reg8_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs8_intel) {
+	foreach (@regs8_intel) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -582,10 +584,10 @@ sub is_reg8_intel($) {
 
 =cut
 
-sub is_reg8_att($) {
+sub is_reg8_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs8_att) {
+	foreach (@regs8_att) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -598,10 +600,10 @@ sub is_reg8_att($) {
 
 =cut
 
-sub is_reg8($) {
+sub is_reg8 ( $ ) {
 
 	my $elem = shift;
-	return is_reg8_intel($elem) | is_reg8_att($elem);
+	return is_reg8_intel ($elem) | is_reg8_att ($elem);
 }
 
 =head2 is_reg16_intel
@@ -611,10 +613,10 @@ sub is_reg8($) {
 
 =cut
 
-sub is_reg16_intel($) {
+sub is_reg16_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs16_intel) {
+	foreach (@regs16_intel) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -627,10 +629,10 @@ sub is_reg16_intel($) {
 
 =cut
 
-sub is_reg16_att($) {
+sub is_reg16_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs16_att) {
+	foreach (@regs16_att) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -643,10 +645,10 @@ sub is_reg16_att($) {
 
 =cut
 
-sub is_reg16($) {
+sub is_reg16 ( $ ) {
 
 	my $elem = shift;
-	return is_reg16_intel($elem) | is_reg16_att($elem);
+	return is_reg16_intel ($elem) | is_reg16_att ($elem);
 }
 
 =head2 is_segreg_intel
@@ -656,10 +658,10 @@ sub is_reg16($) {
 
 =cut
 
-sub is_segreg_intel($) {
+sub is_segreg_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@segregs_intel) {
+	foreach (@segregs_intel) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -672,10 +674,10 @@ sub is_segreg_intel($) {
 
 =cut
 
-sub is_segreg_att($) {
+sub is_segreg_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@segregs_att) {
+	foreach (@segregs_att) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -688,10 +690,10 @@ sub is_segreg_att($) {
 
 =cut
 
-sub is_segreg($) {
+sub is_segreg ( $ ) {
 
 	my $elem = shift;
-	return is_segreg_intel($elem) | is_segreg_att($elem);
+	return is_segreg_intel ($elem) | is_segreg_att ($elem);
 }
 
 =head2 is_reg32_intel
@@ -701,10 +703,10 @@ sub is_segreg($) {
 
 =cut
 
-sub is_reg32_intel($) {
+sub is_reg32_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs32_intel) {
+	foreach (@regs32_intel) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -717,10 +719,10 @@ sub is_reg32_intel($) {
 
 =cut
 
-sub is_reg32_att($) {
+sub is_reg32_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs32_att) {
+	foreach (@regs32_att) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -733,10 +735,10 @@ sub is_reg32_att($) {
 
 =cut
 
-sub is_reg32($) {
+sub is_reg32 ( $ ) {
 
 	my $elem = shift;
-	return is_reg32_intel($elem) | is_reg32_att($elem);
+	return is_reg32_intel ($elem) | is_reg32_att ($elem);
 }
 
 =head2 is_addressable32_intel
@@ -748,10 +750,10 @@ sub is_reg32($) {
 
 =cut
 
-sub is_addressable32_intel($) {
+sub is_addressable32_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@addressable32) {
+	foreach (@addressable32) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -766,10 +768,10 @@ sub is_addressable32_intel($) {
 
 =cut
 
-sub is_addressable32_att($) {
+sub is_addressable32_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@addressable32) {
+	foreach (@addressable32) {
 		return 1 if "\%$_" =~ /^$elem$/i;
 	}
 	return 0;
@@ -784,10 +786,10 @@ sub is_addressable32_att($) {
 
 =cut
 
-sub is_addressable32($) {
+sub is_addressable32 ( $ ) {
 
 	my $elem = shift;
-	return is_addressable32_intel($elem) | is_addressable32_att($elem);
+	return is_addressable32_intel ($elem) | is_addressable32_att ($elem);
 }
 
 =head2 is_r32_in64_intel
@@ -800,10 +802,10 @@ sub is_addressable32($) {
 
 =cut
 
-sub is_r32_in64_intel($) {
+sub is_r32_in64_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@r32_in64) {
+	foreach (@r32_in64) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -819,10 +821,10 @@ sub is_r32_in64_intel($) {
 
 =cut
 
-sub is_r32_in64_att($) {
+sub is_r32_in64_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@r32_in64) {
+	foreach (@r32_in64) {
 		return 1 if "\%$_" =~ /^$elem$/i;
 	}
 	return 0;
@@ -838,10 +840,10 @@ sub is_r32_in64_att($) {
 
 =cut
 
-sub is_r32_in64($) {
+sub is_r32_in64 ( $ ) {
 
 	my $elem = shift;
-	return is_r32_in64_intel($elem) | is_r32_in64_att($elem);
+	return is_r32_in64_intel ($elem) | is_r32_in64_att ($elem);
 }
 
 =head2 is_reg64_intel
@@ -851,10 +853,10 @@ sub is_r32_in64($) {
 
 =cut
 
-sub is_reg64_intel($) {
+sub is_reg64_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs64_intel) {
+	foreach (@regs64_intel) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -867,10 +869,10 @@ sub is_reg64_intel($) {
 
 =cut
 
-sub is_reg64_att($) {
+sub is_reg64_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs64_att) {
+	foreach (@regs64_att) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -883,10 +885,10 @@ sub is_reg64_att($) {
 
 =cut
 
-sub is_reg64($) {
+sub is_reg64 ( $ ) {
 
 	my $elem = shift;
-	return is_reg64_intel($elem) | is_reg64_att($elem);
+	return is_reg64_intel ($elem) | is_reg64_att ($elem);
 }
 
 =head2 is_reg_mm_intel
@@ -897,10 +899,10 @@ sub is_reg64($) {
 
 =cut
 
-sub is_reg_mm_intel($) {
+sub is_reg_mm_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs_mm_intel) {
+	foreach (@regs_mm_intel) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -914,10 +916,10 @@ sub is_reg_mm_intel($) {
 
 =cut
 
-sub is_reg_mm_att($) {
+sub is_reg_mm_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs_mm_att) {
+	foreach (@regs_mm_att) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -930,10 +932,10 @@ sub is_reg_mm_att($) {
 
 =cut
 
-sub is_reg_mm($) {
+sub is_reg_mm ( $ ) {
 
 	my $elem = shift;
-	return is_reg_mm_intel($elem) | is_reg_mm_att($elem);
+	return is_reg_mm_intel ($elem) | is_reg_mm_att ($elem);
 }
 
 =head2 is_reg_fpu_intel
@@ -943,10 +945,10 @@ sub is_reg_mm($) {
 
 =cut
 
-sub is_reg_fpu_intel($) {
+sub is_reg_fpu_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs_fpu_intel) {
+	foreach (@regs_fpu_intel) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -959,10 +961,10 @@ sub is_reg_fpu_intel($) {
 
 =cut
 
-sub is_reg_fpu_att($) {
+sub is_reg_fpu_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@regs_fpu_att) {
+	foreach (@regs_fpu_att) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -975,10 +977,10 @@ sub is_reg_fpu_att($) {
 
 =cut
 
-sub is_reg_fpu($) {
+sub is_reg_fpu ( $ ) {
 
 	my $elem = shift;
-	return is_reg_fpu_intel($elem) | is_reg_fpu_att($elem);
+	return is_reg_fpu_intel ($elem) | is_reg_fpu_att ($elem);
 }
 
 =head2 is_instr_intel
@@ -988,10 +990,10 @@ sub is_reg_fpu($) {
 
 =cut
 
-sub is_instr_intel($) {
+sub is_instr_intel ( $ ) {
 
 	my $elem = shift;
-	foreach(@instr_intel) {
+	foreach (@instr_intel) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -1004,10 +1006,10 @@ sub is_instr_intel($) {
 
 =cut
 
-sub is_instr_att($) {
+sub is_instr_att ( $ ) {
 
 	my $elem = shift;
-	foreach(@instr_att) {
+	foreach (@instr_att) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -1020,10 +1022,10 @@ sub is_instr_att($) {
 
 =cut
 
-sub is_instr($) {
+sub is_instr ( $ ) {
 
 	my $elem = shift;
-	return is_instr_intel($elem) | is_instr_att($elem);
+	return is_instr_intel ($elem) | is_instr_att ($elem);
 }
 
 ##############################################################################
@@ -1036,7 +1038,7 @@ sub is_instr($) {
 
 =cut
 
-sub is_valid_16bit_addr_intel($) {
+sub is_valid_16bit_addr_intel ( $ ) {
 
 	my $elem = shift;
 	if ( $elem =~ /^(\w+):\s*\[\s*([\+\-]*)\s*(\w+)\s*\]$/o
@@ -1399,7 +1401,7 @@ sub is_valid_16bit_addr_intel($) {
 
 =cut
 
-sub is_valid_16bit_addr_att($) {
+sub is_valid_16bit_addr_att ( $ ) {
 
 	my $elem = shift;
 	if ( $elem =~ /^([%\w]+):\s*\(\s*([+-]*)\s*([%\w]+)\s*\)$/o ) {
@@ -1559,11 +1561,11 @@ sub is_valid_16bit_addr_att($) {
 
 =cut
 
-sub is_valid_16bit_addr($) {
+sub is_valid_16bit_addr ( $ ) {
 
 	my $elem = shift;
-	return    is_valid_16bit_addr_intel($elem)
-		| is_valid_16bit_addr_att($elem);
+	return    is_valid_16bit_addr_intel ($elem)
+		| is_valid_16bit_addr_att ($elem);
 }
 
 =head2 is_valid_32bit_addr_intel
@@ -1574,7 +1576,7 @@ sub is_valid_16bit_addr($) {
 
 =cut
 
-sub is_valid_32bit_addr_intel($) {
+sub is_valid_32bit_addr_intel ( $ ) {
 
 	my $elem = shift;
 	# [seg:base+index*scale+disp]
@@ -2041,7 +2043,7 @@ sub is_valid_32bit_addr_intel($) {
 
 =cut
 
-sub is_valid_32bit_addr_att($) {
+sub is_valid_32bit_addr_att ( $ ) {
 
 	my $elem = shift;
 	if ( $elem =~ /^([%\w]+):\s*\(\s*([+-]*)\s*([%\w]+)\s*\)$/o ) {
@@ -2229,11 +2231,11 @@ sub is_valid_32bit_addr_att($) {
 
 =cut
 
-sub is_valid_32bit_addr($) {
+sub is_valid_32bit_addr ( $ ) {
 
 	my $elem = shift;
-	return    is_valid_32bit_addr_intel($elem)
-		| is_valid_32bit_addr_att($elem);
+	return    is_valid_32bit_addr_intel ($elem)
+		| is_valid_32bit_addr_att ($elem);
 }
 
 =head2 is_valid_64bit_addr_intel
@@ -2244,7 +2246,7 @@ sub is_valid_32bit_addr($) {
 
 =cut
 
-sub is_valid_64bit_addr_intel($) {
+sub is_valid_64bit_addr_intel ( $ ) {
 
 	my $elem = shift;
 	# [seg:base+index*scale+disp]
@@ -2811,7 +2813,7 @@ sub is_valid_64bit_addr_intel($) {
 
 =cut
 
-sub is_valid_64bit_addr_att($) {
+sub is_valid_64bit_addr_att ( $ ) {
 
 	my $elem = shift;
 	if ( $elem =~ /^([%\w]+):\s*\(\s*([+-]*)\s*([%\w]+)\s*\)$/o ) {
@@ -3047,11 +3049,11 @@ sub is_valid_64bit_addr_att($) {
 
 =cut
 
-sub is_valid_64bit_addr($) {
+sub is_valid_64bit_addr ( $ ) {
 
 	my $elem = shift;
-	return    is_valid_64bit_addr_intel($elem)
-		| is_valid_64bit_addr_att($elem);
+	return    is_valid_64bit_addr_intel ($elem)
+		| is_valid_64bit_addr_att ($elem);
 }
 
 =head2 is_valid_addr_intel
@@ -3062,12 +3064,12 @@ sub is_valid_64bit_addr($) {
 
 =cut
 
-sub is_valid_addr_intel($) {
+sub is_valid_addr_intel ( $ ) {
 
 	my $elem = shift;
-	return    is_valid_16bit_addr_intel($elem)
-		| is_valid_32bit_addr_intel($elem)
-		| is_valid_64bit_addr_intel($elem);
+	return    is_valid_16bit_addr_intel ($elem)
+		| is_valid_32bit_addr_intel ($elem)
+		| is_valid_64bit_addr_intel ($elem);
 }
 
 =head2 is_valid_addr_att
@@ -3109,7 +3111,7 @@ sub is_valid_addr($) {
 
 =cut
 
-sub add_percent(@) {
+sub add_percent ( @ ) {
 
 	my @result = ();
 	foreach (@_) {
@@ -3126,10 +3128,10 @@ sub add_percent(@) {
 
 =cut
 
-sub is_att_suffixed_instr($) {
+sub is_att_suffixed_instr ( $ ) {
 
 	my $elem = shift;
-	foreach(@att_suff_instr) {
+	foreach (@att_suff_instr) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -3143,10 +3145,10 @@ sub is_att_suffixed_instr($) {
 
 =cut
 
-sub is_att_suffixed_instr_fpu($) {
+sub is_att_suffixed_instr_fpu ( $ ) {
 
 	my $elem = shift;
-	foreach(@att_suff_instr_fpu) {
+	foreach (@att_suff_instr_fpu) {
 		return 1 if /^$elem$/i;
 	}
 	return 0;
@@ -3160,7 +3162,7 @@ sub is_att_suffixed_instr_fpu($) {
 
 =cut
 
-sub add_att_suffix_instr(@) {
+sub add_att_suffix_instr ( @ ) {
 
 	my @result = ();
 	foreach (@_) {
@@ -3237,7 +3239,7 @@ sub add_att_suffix_instr(@) {
 
 =cut
 
-sub nopluses($) {
+sub nopluses ( $ ) {
 
 	my $elem = shift;
 	$elem =~ s/^\s*\++//o;
@@ -3253,7 +3255,7 @@ sub nopluses($) {
 
 =cut
 
-sub conv_att_addr_to_intel($) {
+sub conv_att_addr_to_intel ( $ ) {
 
 	my $par = shift;
 	$par =~ s/%([a-zA-Z]+)/$1/go;
@@ -3298,7 +3300,7 @@ sub conv_att_addr_to_intel($) {
 
 =cut
 
-sub conv_intel_addr_to_att($) {
+sub conv_intel_addr_to_att ( $ ) {
 
 	my $par = shift;
 	my ($a1, $a2, $a3, $z1, $z2, $z3);
@@ -3661,7 +3663,7 @@ sub conv_intel_addr_to_att($) {
 
 =cut
 
-sub conv_att_instr_to_intel($) {
+sub conv_att_instr_to_intel ( $ ) {
 
 	my $par = shift;
 	# (changing "xxx" to "[xxx]", if there's no '$' or '%')
@@ -3820,7 +3822,7 @@ sub conv_att_instr_to_intel($) {
 
 =cut
 
-sub conv_intel_instr_to_att($) {
+sub conv_intel_instr_to_att ( $ ) {
 
 	my $par = shift;
 	my ($a1, $a2, $a3, $a4);
@@ -4057,7 +4059,7 @@ Bogdan Drozdowski, C<< <bogdandr at op.pl> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008-2009 Bogdan Drozdowski, all rights reserved.
+Copyright 2008-2010 Bogdan Drozdowski, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

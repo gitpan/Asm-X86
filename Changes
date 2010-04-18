@@ -1,5 +1,11 @@
 Revision history for Asm-X86
 
+2010-04-18	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.09:
+	  Updated the instruction list from NASM version 2.08.01. Minor
+	  whitespace changes in the source, for better readbility.
+
 2009-07-05	Bogdan Drozdowski <bogdandr@op.pl>
 
 	* Version 0.08:
