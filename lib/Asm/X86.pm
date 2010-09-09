@@ -33,11 +33,11 @@ Asm::X86 - List of instructions and registers of Intel x86-compatible processors
 
 =head1 VERSION
 
-Version 0.09
+Version 0.10
 
 =cut
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 =head1 DESCRIPTION
 
@@ -305,7 +305,8 @@ our @instr_intel = (
 	'fprem', 'fprem1', 'fptan', 'frczpd', 'frczps', 'frczsd', 'frczss', 'frndint', 'frstor', 'fsave',
 	'fscale', 'fsetpm', 'fsin', 'fsincos', 'fsqrt', 'fst', 'fstcw', 'fstenv', 'fstp', 'fstsw',
 	'fsub', 'fsubp', 'fsubr', 'fsubrp', 'ftst', 'fucom', 'fucomi', 'fucomip', 'fucomp', 'fucompp',
-	'fwait', 'fxam', 'fxch', 'fxrstor', 'fxsave', 'fxtract', 'fyl2x', 'fyl2xp1', 'getsec', 'haddpd',
+	'fwait', 'fxam', 'fxch', 'fxrstor', 'fxrstor64', 'fxsave', 'fxsave64',
+	'fxtract', 'fyl2x', 'fyl2xp1', 'getsec', 'haddpd',
 	'haddps', 'hint_nop0', 'hint_nop1', 'hint_nop10', 'hint_nop11', 'hint_nop12', 'hint_nop13',
 	'hint_nop14','hint_nop15', 'hint_nop16', 'hint_nop17', 'hint_nop18', 'hint_nop19', 'hint_nop2',
 	'hint_nop20', 'hint_nop21', 'hint_nop22', 'hint_nop23', 'hint_nop24', 'hint_nop25', 'hint_nop26',
@@ -369,7 +370,8 @@ our @instr_intel = (
 	'psubsb', 'psubsiw', 'psubsw', 'psubusb', 'psubusw', 'psubw', 'pswapd', 'ptest', 'punpckhbw',
 	'punpckhdq', 'punpckhqdq', 'punpckhwd', 'punpcklbw', 'punpckldq', 'punpcklqdq', 'punpcklwd',
 	'push', 'pusha', 'pushad', 'pushaw', 'pushf', 'pushfd', 'pushfq', 'pushfw', 'pxor', 'rcl',
-	'rcpps', 'rcpss', 'rcr', 'rdm', 'rdmsr', 'rdpmc', 'rdshr', 'rdtsc', 'rdtscp', 'rep', 'ret', 'retf',
+	'rcpps', 'rcpss', 'rcr', 'rdfsbase', 'rdgsbase', 'rdm', 'rdmsr', 'rdpmc', 'rdrand', 'rdshr',
+	'rdtsc', 'rdtscp', 'rep', 'ret', 'retf',
 	'retn', 'rol', 'ror', 'roundpd', 'roundps', 'roundsd', 'roundss', 'rsdc', 'rsldt', 'rsm',
 	'rsqrtps', 'rsqrtss', 'rsts', 'sahf', 'sal', 'salc', 'sar', 'sbb', 'scasb', 'scasd', 'scasq',
 	'scasw', 'seta', 'setae', 'setb', 'setbe', 'setc', 'sete', 'setg', 'setge', 'setl',
@@ -387,23 +389,37 @@ our @instr_intel = (
 	'vcmpeqps', 'vcmpeqsd', 'vcmpeqss', 'vcmpeq_ospd', 'vcmpeq_osps', 'vcmpeq_ossd',
 	'vcmpeq_osss', 'vcmpeq_uqpd', 'vcmpeq_uqps', 'vcmpeq_uqsd', 'vcmpeq_uqss', 'vcmpeq_uspd',
 	'vcmpeq_usps', 'vcmpeq_ussd', 'vcmpeq_usss', 'vcmpfalsepd', 'vcmpfalseps', 'vcmpfalsesd',
-	'vcmpfalsess', 'vcmpfalse_ospd', 'vcmpfalse_osps', 'vcmpfalse_ossd', 'vcmpfalse_osss',
+	'vcmpfalsess', 'vcmpfalse_oqpd', 'vcmpfalse_oqps', 'vcmpfalse_oqsd', 'vcmpfalse_oqss',
+	'vcmpfalse_ospd', 'vcmpfalse_osps', 'vcmpfalse_ossd', 'vcmpfalse_osss',
 	'vcmpgepd', 'vcmpgeps', 'vcmpgesd', 'vcmpgess', 'vcmpge_oqpd', 'vcmpge_oqps', 'vcmpge_oqsd',
-	'vcmpge_oqss', 'vcmpgtpd', 'vcmpgtps', 'vcmpgtsd', 'vcmpgtss', 'vcmpgt_oqpd', 'vcmpgt_oqps',
-	'vcmpgt_oqsd', 'vcmpgt_oqss', 'vcmplepd', 'vcmpleps', 'vcmplesd', 'vcmpless', 'vcmple_oqpd',
-	'vcmple_oqps', 'vcmple_oqsd', 'vcmple_oqss', 'vcmpltpd', 'vcmpltps', 'vcmpltsd', 'vcmpltss',
-	'vcmplt_oqpd', 'vcmplt_oqps', 'vcmplt_oqsd', 'vcmplt_oqss', 'vcmpneqpd', 'vcmpneqps',
+	'vcmpge_oqss', 'vcmpge_ospd', 'vcmpge_osps', 'vcmpge_ossd',
+	'vcmpge_osss', 'vcmpgtpd', 'vcmpgtps', 'vcmpgtsd', 'vcmpgtss', 'vcmpgt_oqpd', 'vcmpgt_oqps',
+	'vcmpgt_oqsd', 'vcmpgt_oqss', 'vcmpgt_ospd', 'vcmpgt_osps',
+	'vcmpgt_ossd', 'vcmpgt_osss', 'vcmplepd', 'vcmpleps', 'vcmplesd', 'vcmpless', 'vcmple_oqpd',
+	'vcmple_oqps', 'vcmple_oqsd', 'vcmple_oqss', 'vcmple_ospd',
+	'vcmple_osps', 'vcmple_ossd', 'vcmple_osss', 'vcmpltpd', 'vcmpltps', 'vcmpltsd', 'vcmpltss',
+	'vcmplt_oqpd', 'vcmplt_oqps', 'vcmplt_oqsd', 'vcmplt_oqss',
+	'vcmplt_ospd', 'vcmplt_osps', 'vcmplt_ossd', 'vcmplt_osss', 'vcmpneqpd', 'vcmpneqps',
 	'vcmpneqsd', 'vcmpneqss', 'vcmpneq_oqpd', 'vcmpneq_oqps', 'vcmpneq_oqsd', 'vcmpneq_oqss',
-	'vcmpneq_ospd', 'vcmpneq_osps', 'vcmpneq_ossd', 'vcmpneq_osss', 'vcmpneq_uspd', 'vcmpneq_usps',
+	'vcmpneq_ospd', 'vcmpneq_osps', 'vcmpneq_ossd', 'vcmpneq_osss',
+	'vcmpneq_uqpd', 'vcmpneq_uqps', 'vcmpneq_uqsd', 'vcmpneq_uqss', 'vcmpneq_uspd', 'vcmpneq_usps',
 	'vcmpneq_ussd', 'vcmpneq_usss', 'vcmpngepd', 'vcmpngeps', 'vcmpngesd', 'vcmpngess', 'vcmpnge_uqpd',
-	'vcmpnge_uqps', 'vcmpnge_uqsd', 'vcmpnge_uqss', 'vcmpngtpd', 'vcmpngtps', 'vcmpngtsd', 'vcmpngtss',
-	'vcmpngt_uqpd', 'vcmpngt_uqps', 'vcmpngt_uqsd', 'vcmpngt_uqss', 'vcmpnlepd', 'vcmpnleps',
+	'vcmpnge_uqps', 'vcmpnge_uqsd', 'vcmpnge_uqss',
+	'vcmpnge_uspd', 'vcmpnge_usps', 'vcmpnge_ussd', 'vcmpnge_usss',
+	'vcmpngtpd', 'vcmpngtps', 'vcmpngtsd', 'vcmpngtss',
+	'vcmpngt_uqpd', 'vcmpngt_uqps', 'vcmpngt_uqsd', 'vcmpngt_uqss',
+	'vcmpngt_uspd', 'vcmpngt_usps', 'vcmpngt_ussd', 'vcmpngt_usss', 'vcmpnlepd', 'vcmpnleps',
 	'vcmpnlesd', 'vcmpnless', 'vcmpnle_uqpd', 'vcmpnle_uqps', 'vcmpnle_uqsd', 'vcmpnle_uqss',
+	'vcmpnle_uspd', 'vcmpnle_usps', 'vcmpnle_ussd', 'vcmpnle_usss',
 	'vcmpnltpd', 'vcmpnltps', 'vcmpnltsd', 'vcmpnltss', 'vcmpnlt_uqpd', 'vcmpnlt_uqps', 'vcmpnlt_uqsd',
-	'vcmpnlt_uqss', 'vcmpordpd', 'vcmpordps', 'vcmpordsd', 'vcmpordss', 'vcmpord_spd', 'vcmpord_sps',
+	'vcmpnlt_uqss', 'vcmpnlt_uspd', 'vcmpnlt_usps', 'vcmpnlt_ussd', 'vcmpnlt_usss',
+	'vcmpordpd', 'vcmpordps', 'vcmpordsd', 'vcmpordss', 'vcmpord_qpd', 'vcmpord_qps',
+	'vcmpord_qsd', 'vcmpord_qss', 'vcmpord_spd', 'vcmpord_sps',
 	'vcmpord_ssd', 'vcmpord_sss', 'vcmppd', 'vcmpps', 'vcmpsd', 'vcmpss', 'vcmptruepd', 'vcmptrueps',
-	'vcmptruesd', 'vcmptruess', 'vcmptrue_uspd', 'vcmptrue_usps', 'vcmptrue_ussd', 'vcmptrue_usss',
-	'vcmpunordpd', 'vcmpunordps', 'vcmpunordsd', 'vcmpunordss', 'vcmpunord_spd', 'vcmpunord_sps',
+	'vcmptruesd', 'vcmptruess', 'vcmptrue_uqpd', 'vcmptrue_uqps', 'vcmptrue_uqsd', 'vcmptrue_uqss',
+	'vcmptrue_uspd', 'vcmptrue_usps', 'vcmptrue_ussd', 'vcmptrue_usss',
+	'vcmpunordpd', 'vcmpunordps', 'vcmpunordsd', 'vcmpunordss',
+	'vcmpunord_qpd', 'vcmpunord_qps', 'vcmpunord_qsd', 'vcmpunord_qss', 'vcmpunord_spd', 'vcmpunord_sps',
 	'vcmpunord_ssd', 'vcmpunord_sss', 'vcomisd', 'vcomiss', 'vcvtdq2pd', 'vcvtdq2ps', 'vcvtpd2dq',
 	'vcvtpd2ps', 'vcvtph2ps', 'vcvtps2dq', 'vcvtps2pd', 'vcvtps2ph', 'vcvtsd2si', 'vcvtsd2ss',
 	'vcvtsi2sd', 'vcvtsi2ss', 'vcvtss2sd', 'vcvtss2si', 'vcvttpd2dq', 'vcvttps2dq', 'vcvttsd2si',
@@ -474,9 +490,10 @@ our @instr_intel = (
 	'vshufps', 'vsqrtpd', 'vsqrtps', 'vsqrtsd', 'vsqrtss', 'vstmxcsr', 'vsubpd',
 	'vsubps', 'vsubsd', 'vsubss', 'vtestpd', 'vtestps', 'vucomisd', 'vucomiss', 'vunpckhpd',
 	'vunpckhps', 'vunpcklpd', 'vunpcklps', 'vxorpd', 'vxorps', 'vzeroall', 'vzeroupper',
-	'wbinvd', 'wrmsr', 'wrshr', 'xadd', 'xbts', 'xchg', 'xcryptcbc', 'xcryptcfb',
+	'wbinvd', 'wrfsbase', 'wrgsbase', 'wrmsr', 'wrshr', 'xadd', 'xbts', 'xchg', 'xcryptcbc', 'xcryptcfb',
 	'xcryptctr', 'xcryptecb', 'xcryptofb', 'xgetbv', 'xlat', 'xlatb', 'xor', 'xorpd',
-	'xorps', 'xrstor', 'xsave', 'xsetbv', 'xsha1', 'xsha256', 'xstore'
+	'xorps', 'xrstor', 'xrstor64', 'xsave', 'xsave64', 'xsaveopt', 'xsaveopt64',
+	'xsetbv', 'xsha1', 'xsha256', 'xstore'
  		);
 
 # non-FPU instructions with suffixes in AT&T syntax
