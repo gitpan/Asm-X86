@@ -10,16 +10,21 @@ require Exporter;
 	@regs_intel @regs_fpu_intel
 	@regs8_att @regs16_att @segregs_att @regs32_att @regs64_att @regs_mm_att
 	@regs_att @regs_fpu_att
+
 	@instr_intel @instr_att @instr
+
 	is_reg_intel is_reg8_intel is_reg16_intel is_reg32_intel
 		is_reg64_intel is_reg_mm_intel is_segreg_intel is_reg_fpu_intel
 	is_reg_att is_reg8_att is_reg16_att is_reg32_att
 		is_reg64_att is_reg_mm_att is_segreg_att is_reg_fpu_att
 	is_reg is_reg8 is_reg16 is_reg32 is_reg64 is_reg_mm is_segreg is_reg_fpu
+
 	is_instr_intel is_instr_att is_instr
+
 	is_valid_16bit_addr_intel is_valid_32bit_addr_intel is_valid_64bit_addr_intel is_valid_addr_intel
 	is_valid_16bit_addr_att is_valid_32bit_addr_att is_valid_64bit_addr_att is_valid_addr_att
 	is_valid_16bit_addr is_valid_32bit_addr is_valid_64bit_addr is_valid_addr
+
 	conv_att_addr_to_intel conv_intel_addr_to_att
 	conv_att_instr_to_intel conv_intel_instr_to_att
 	);
@@ -33,11 +38,11 @@ Asm::X86 - List of instructions and registers of Intel x86-compatible processors
 
 =head1 VERSION
 
-Version 0.11
+Version 0.12
 
 =cut
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 =head1 DESCRIPTION
 
@@ -84,7 +89,7 @@ between AT&T and Intel syntaxes.
 	@regs_att @regs_fpu_att
 	@instr_intel @instr_att @instr
 
- These contain all register and instruction mnemonic names as strings.
+ These contain all register and instruction mnemonic names as lower-case strings.
  The "_intel" and "_att" suffixes mean the Intel and AT&T syntaxes, respectively.
  No suffix means either Intel or AT&T.
 
@@ -93,6 +98,9 @@ between AT&T and Intel syntaxes.
 =cut
 
 sub add_percent ( @ );
+sub add_att_suffix_instr ( @ );
+sub remove_duplicates ( @ );
+
 
 =head2 @regs8_intel
 
@@ -167,7 +175,7 @@ my @r32_in64 = (
 
 our @regs32_intel = (
 		@addressable32,
-		'cr0', 'cr2', 'cr3', 'cr4',
+		'cr0', 'cr2', 'cr3', 'cr4', 'cr8',
 		'dr0', 'dr1', 'dr2', 'dr3', 'dr6', 'dr7',
 		@r32_in64
 		);
@@ -392,28 +400,24 @@ our @instr_intel = (
 	'vaeskeygenassist', 'vandnpd', 'vandnps', 'vandpd', 'vandps', 'vblendpd', 'vblendps',
 	'vblendvpd', 'vblendvps', 'vbroadcastf128', 'vbroadcastsd', 'vbroadcastss', 'vcmpeqpd',
 	'vcmpeqps', 'vcmpeqsd', 'vcmpeqss', 'vcmpeq_ospd', 'vcmpeq_osps', 'vcmpeq_ossd',
-	'vcmpeq_osss', 'vcmpeqpd', 'vcmpeqps', 'vcmpeqsd', 'vcmpeqss', 'vcmpeq_uqpd', 'vcmpeq_uqps',
+	'vcmpeq_osss', 'vcmpeq_uqpd', 'vcmpeq_uqps',
 	'vcmpeq_uqsd', 'vcmpeq_uqss', 'vcmpeq_uspd',
 	'vcmpeq_usps', 'vcmpeq_ussd', 'vcmpeq_usss', 'vcmpfalsepd', 'vcmpfalseps', 'vcmpfalsesd',
 	'vcmpfalsess', 'vcmpfalse_oqpd', 'vcmpfalse_oqps', 'vcmpfalse_oqsd', 'vcmpfalse_oqss',
 	'vcmpfalse_ospd', 'vcmpfalse_osps', 'vcmpfalse_ossd', 'vcmpfalse_osss',
-	'vcmpgepd', 'vcmpgeps', 'vcmpgesd', 'vcmpgess', 'vcmpfalsepd', 'vcmpfalseps', 'vcmpfalsesd',
-	'vcmpfalsess', 'vcmpge_oqpd', 'vcmpge_oqps', 'vcmpge_oqsd',
+	'vcmpgepd', 'vcmpgeps', 'vcmpgesd', 'vcmpgess', 'vcmpge_oqpd', 'vcmpge_oqps', 'vcmpge_oqsd',
 	'vcmpge_oqss', 'vcmpge_ospd', 'vcmpge_osps', 'vcmpge_ossd',
-	'vcmpge_osss', 'vcmpgtpd', 'vcmpgtps', 'vcmpgtsd', 'vcmpgtss', 'vcmpgepd', 'vcmpgeps',
-	'vcmpgesd', 'vcmpgess', 'vcmpgt_oqpd', 'vcmpgt_oqps',
+	'vcmpge_osss', 'vcmpgtpd', 'vcmpgtps', 'vcmpgtsd', 'vcmpgtss', 'vcmpgt_oqpd', 'vcmpgt_oqps',
 	'vcmpgt_oqsd', 'vcmpgt_oqss', 'vcmpgt_ospd', 'vcmpgt_osps',
-	'vcmpgt_ossd', 'vcmpgt_osss', 'vcmplepd', 'vcmpleps', 'vcmplesd', 'vcmpless', 'vcmpgtpd',
-	'vcmpgtps', 'vcmpgtsd', 'vcmpgtss', 'vcmple_oqpd',
+	'vcmpgt_ossd', 'vcmpgt_osss', 'vcmplepd', 'vcmpleps', 'vcmplesd', 'vcmpless', 'vcmple_oqpd',
 	'vcmple_oqps', 'vcmple_oqsd', 'vcmple_oqss', 'vcmple_ospd',
 	'vcmple_osps', 'vcmple_ossd', 'vcmple_osss', 'vcmpltpd', 'vcmpltps', 'vcmpltsd', 'vcmpltss',
-	'vcmplepd', 'vcmpleps', 'vcmplesd', 'vcmpless', 'vcmplt_oqpd', 'vcmplt_oqps', 'vcmplt_oqsd', 'vcmplt_oqss',
+	'vcmplt_oqpd', 'vcmplt_oqps', 'vcmplt_oqsd', 'vcmplt_oqss',
 	'vcmplt_ospd', 'vcmplt_osps', 'vcmplt_ossd', 'vcmplt_osss', 'vcmpneqpd', 'vcmpneqps',
-	'vcmpneqsd', 'vcmpneqss', 'vcmpltpd', 'vcmpltps', 'vcmpltsd', 'vcmpltss', 'vcmpneq_oqpd',
+	'vcmpneqsd', 'vcmpneqss', 'vcmpneq_oqpd',
 	'vcmpneq_oqps', 'vcmpneq_oqsd', 'vcmpneq_oqss',
 	'vcmpneq_ospd', 'vcmpneq_osps', 'vcmpneq_ossd', 'vcmpneq_osss',
-	'vcmpneq_uqpd', 'vcmpneq_uqps', 'vcmpneq_uqsd', 'vcmpneq_uqss', 'vcmpneqpd', 'vcmpneqps',
-	'vcmpneqsd', 'vcmpneqss', 'vcmpneq_uspd', 'vcmpneq_usps',
+	'vcmpneq_uqpd', 'vcmpneq_uqps', 'vcmpneq_uqsd', 'vcmpneq_uqss', 'vcmpneq_uspd', 'vcmpneq_usps',
 	'vcmpneq_ussd', 'vcmpneq_usss', 'vcmpngepd', 'vcmpngeps', 'vcmpngesd', 'vcmpngess', 'vcmpnge_uqpd',
 	'vcmpnge_uqps', 'vcmpnge_uqsd', 'vcmpnge_uqss',
 	'vcmpnge_uspd', 'vcmpnge_usps', 'vcmpnge_ussd', 'vcmpnge_usss',
@@ -425,12 +429,12 @@ our @instr_intel = (
 	'vcmpnltpd', 'vcmpnltps', 'vcmpnltsd', 'vcmpnltss', 'vcmpnlt_uqpd', 'vcmpnlt_uqps', 'vcmpnlt_uqsd',
 	'vcmpnlt_uqss', 'vcmpnlt_uspd', 'vcmpnlt_usps', 'vcmpnlt_ussd', 'vcmpnlt_usss',
 	'vcmpordpd', 'vcmpordps', 'vcmpordsd', 'vcmpordss', 'vcmpord_qpd', 'vcmpord_qps',
-	'vcmpord_qsd', 'vcmpord_qss', 'vcmpord_spd', 'vcmpord_sps', 'vcmpordss',
+	'vcmpord_qsd', 'vcmpord_qss', 'vcmpord_spd', 'vcmpord_sps',
 	'vcmpord_ssd', 'vcmpord_sss', 'vcmppd', 'vcmpps', 'vcmpsd', 'vcmpss', 'vcmptruepd', 'vcmptrueps',
 	'vcmptruesd', 'vcmptruess', 'vcmptrue_uqpd', 'vcmptrue_uqps', 'vcmptrue_uqsd', 'vcmptrue_uqss',
 	'vcmptrue_uspd', 'vcmptrue_usps', 'vcmptrue_ussd', 'vcmptrue_usss',
 	'vcmpunordpd', 'vcmpunordps', 'vcmpunordsd', 'vcmpunordss', 'vcmpunord_qpd', 'vcmpunord_qps',
-	'vcmpunord_qsd', 'vcmpunord_qss', 'vcmpunord_spd', 'vcmpunord_sps', 'vcmpunordss', 'vcmpunord_ssd',
+	'vcmpunord_qsd', 'vcmpunord_qss', 'vcmpunord_spd', 'vcmpunord_sps', 'vcmpunord_ssd',
 	'vcmpunord_sss', 'vcomisd', 'vcomiss', 'vcvtdq2pd', 'vcvtdq2ps', 'vcvtpd2dq',
 	'vcvtpd2ps', 'vcvtph2ps', 'vcvtps2dq', 'vcvtps2pd', 'vcvtps2ph', 'vcvtsd2si', 'vcvtsd2ss',
 	'vcvtsi2sd', 'vcvtsi2ss', 'vcvtss2sd', 'vcvtss2si', 'vcvttpd2dq', 'vcvttps2dq', 'vcvttsd2si',
@@ -535,8 +539,6 @@ my @att_suff_instr_fpu = (
 	'fucom', 'fucomp', 'fucompp', 'fucomi', 'fucomip'
 		);
 
-sub add_att_suffix_instr ( @ );
-
 =head2 @instr_att
 
  A list of all x86 instructions (as strings) in AT&T syntax.
@@ -551,7 +553,8 @@ our @instr_att = add_att_suffix_instr @instr_intel;
 
 =cut
 
-our @instr = ( @instr_intel, @instr_att );
+# concatenating the lists can create unnecessary duplicate entries, so remove them
+our @instr = remove_duplicates ( @instr_intel, @instr_att );
 
 =head1 FUNCTIONS
 
@@ -3207,24 +3210,24 @@ sub add_att_suffix_instr ( @ ) {
 	foreach (@_) {
 		if ( is_att_suffixed_instr ($_) ) {
 
-			push @result, $_."b";
-			push @result, $_."w";
-			push @result, $_."l";
+			push @result, $_.'b';
+			push @result, $_.'w';
+			push @result, $_.'l';
 		}
 		else
 		{
 			# FPU instructions
 			if ( /^fi(\w+)/io )
 			{
-				push @result, $_."s";
-				push @result, $_."l";
-				push @result, $_."q";
+				push @result, $_.'s';
+				push @result, $_.'l';
+				push @result, $_.'q';
 			}
 			elsif ( is_att_suffixed_instr_fpu ($_) )
 			{
-				push @result, $_."s";
-				push @result, $_."l";
-				push @result, $_."t";
+				push @result, $_.'s';
+				push @result, $_.'l';
+				push @result, $_.'t';
 			}
 			elsif ( /^\s*(mov[sz])x\s+([^,]+)\s*,\s*([^,]+)(.*)/io )
 			{
@@ -3249,15 +3252,15 @@ sub add_att_suffix_instr ( @ ) {
 			{
 				push @result, 'cbtw';
 			}
-			elsif ( /^\s*cbw\b/io )
+			elsif ( /^\s*cwde\b/io )
 			{
 				push @result, 'cwtl';
 			}
-			elsif ( /^\s*cbw\b/io )
+			elsif ( /^\s*cwd\b/io )
 			{
 				push @result, 'cwtd';
 			}
-			elsif ( /^\s*cbw\b/io )
+			elsif ( /^\s*cdq\b/io )
 			{
 				push @result, 'cltd';
 			}
@@ -3267,7 +3270,27 @@ sub add_att_suffix_instr ( @ ) {
 			}
 		}
 	}
-	return @result;
+	# adding AT&T suffixes can create duplicate entries. Remove them here:
+	return remove_duplicates (@result);
+}
+
+=head2 remove_duplicates
+
+ PRIVATE SUBROUTINE.
+ Returns an array of the provided arguments with duplicate entries removed.
+
+=cut
+
+sub remove_duplicates ( @ ) {
+
+	my @result = ();
+	# Use a hash to remove the duplicates:
+	my %new_hash;
+	foreach (@_)
+	{
+		$new_hash{$_} = 1;
+	}
+	return keys %new_hash;
 }
 
 =head2 nopluses
@@ -4098,7 +4121,7 @@ Bogdan Drozdowski, C<< <bogdandr at op.pl> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008-2010 Bogdan Drozdowski, all rights reserved.
+Copyright 2008-2012 Bogdan Drozdowski, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

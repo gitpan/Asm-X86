@@ -1,5 +1,18 @@
 Revision history for Asm-X86
 
+2012-01-22	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.12
+	* X86.pm: Removed duplicates from the instruction and mnemonic list.
+	  Fixed the private subroutine add_att_suffix_instr (some AT&T
+	  instructions were not generated). Added one new register, CR8
+	  (available only in 64-bit mode).
+	* X86.pm, README: Bump the year in the copyright notices.
+	* README: Update with external dependencies required during manual
+	  installation.
+	* zz_duplicates.t: a new test to detect duplicate entries in all the
+	  arrays exported by the module.
+
 2011-12-30	Bogdan Drozdowski <bogdandr@op.pl>
 
 	* Version 0.11:

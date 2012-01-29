@@ -10,6 +10,7 @@ t/pod.t
 t/zz_addr_att.t
 t/zz_addr_intel.t
 t/zz_addr_mixed.t
+t/zz_duplicates.t
 t/zz_conv.t
 t/zz_instr_att.t
 t/zz_instr_intel.t
