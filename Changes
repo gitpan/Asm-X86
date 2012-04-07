@@ -1,5 +1,18 @@
 Revision history for Asm-X86
 
+2012-03-31	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.13
+	* X86.pm: Updated the instruction list from NASM version 2.10 and
+	  FASM version 1.69.50. Made is_addressable32_intel,
+	  is_addressable32_att, is_addressable32, is_r32_in64_intel
+	  is_r32_in64_att, is_r32_in64, is_att_suffixed_instr
+	  is_att_suffixed_instr_fpu and add_att_suffix_instr public.
+	* X86.pm (conv_intel_instr_to_att): corrected removing double percent
+	  character that may be created during the conversion.
+	* X86.pm (conv_intel_addr_to_att): removing double percent character
+	  that may be created during the conversion.
+
 2012-01-22	Bogdan Drozdowski <bogdandr@op.pl>
 
 	* Version 0.12

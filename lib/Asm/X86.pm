@@ -27,6 +27,10 @@ require Exporter;
 
 	conv_att_addr_to_intel conv_intel_addr_to_att
 	conv_att_instr_to_intel conv_intel_instr_to_att
+
+	is_addressable32_intel is_addressable32_att is_addressable32
+	is_r32_in64_intel is_r32_in64_att is_r32_in64
+	is_att_suffixed_instr is_att_suffixed_instr_fpu add_att_suffix_instr
 	);
 
 use strict;
@@ -38,11 +42,11 @@ Asm::X86 - List of instructions and registers of Intel x86-compatible processors
 
 =head1 VERSION
 
-Version 0.12
+Version 0.13
 
 =cut
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 =head1 DESCRIPTION
 
@@ -74,6 +78,9 @@ between AT&T and Intel syntaxes.
 	is_valid_16bit_addr is_valid_32bit_addr is_valid_64bit_addr is_valid_addr
 	conv_att_addr_to_intel conv_intel_addr_to_att
 	conv_att_instr_to_intel conv_intel_instr_to_att
+	is_addressable32_intel is_addressable32_att is_addressable32
+	is_r32_in64_intel is_r32_in64_att is_r32_in64
+	is_att_suffixed_instr is_att_suffixed_instr_fpu add_att_suffix_instr
 
  These check if the given string parameter belongs to the specified
  class of registers or instructions or is a vaild addressing mode.
@@ -274,9 +281,11 @@ our @regs_att = ( @regs8_att, @regs16_att, @regs32_att,
 our @instr_intel = (
 	'aaa', 'aad', 'aam', 'aas', 'adc', 'add', 'addpd', 'addps', 'addsd', 'addss', 'addsubpd',
 	'addsubps', 'aesdec', 'aesdeclast', 'aesenc', 'aesenclast', 'aesimc', 'aeskeygenassist',
-	'and', 'andnpd', 'andnps', 'andpd', 'andps', 'arpl', 'bb0_reset', 'bb1_reset', 'blendpd',
-	'blendps', 'blendvpd', 'blendvps', 'bound', 'bsf', 'bsr', 'bswap', 'bt', 'btc', 'btr',
-	'bts', 'call', 'cbw', 'cdq', 'cdqe', 'clc', 'cld', 'clflush', 'clgi', 'cli', 'clts',
+	'and', 'andn', 'andnpd', 'andnps', 'andpd', 'andps', 'arpl', 'bb0_reset',
+	'bb1_reset', 'bextr', 'blcfill', 'blci', 'blcic', 'blcmsk', 'blcs',
+	'blendpd', 'blendps', 'blendvpd', 'blendvps', 'blsfill', 'blsi', 'blsic', 'blsmsk', 'blsr',
+	'bound', 'bsf', 'bsr', 'bswap', 'bt', 'btc', 'btr', 'bts', 'bzhi', 'call', 'cbw',
+	'cdq', 'cdqe', 'clc', 'cld', 'clflush', 'clgi', 'cli', 'clts',
 	'cmc', 'cmova', 'cmovae', 'cmovb', 'cmovbe', 'cmovc', 'cmove', 'cmovg', 'cmovge',
 	'cmovl', 'cmovle', 'cmovna', 'cmovnae', 'cmovnb', 'cmovnbe', 'cmovnc',
 	'cmovne', 'cmovng', 'cmovnge', 'cmovnl', 'cmovnle', 'cmovno', 'cmovnp',
@@ -328,7 +337,7 @@ our @instr_intel = (
 	'hint_nop59', 'hint_nop6', 'hint_nop60', 'hint_nop61', 'hint_nop62', 'hint_nop63', 'hint_nop7',
 	'hint_nop8', 'hint_nop9', 'hlt', 'hsubpd', 'hsubps', 'ibts', 'icebp', 'idiv', 'imul', 'in',
 	'inc', 'incbin', 'insb', 'insd', 'insertps', 'insertq', 'insw', 'int', 'int01', 'int03',
-	'int1', 'int3', 'into', 'invd', 'invept', 'invlpg', 'invlpga', 'invvpid', 'iret', 'iretd',
+	'int1', 'int3', 'into', 'invd', 'invept', 'invlpg', 'invlpga', 'invpcid', 'invvpid', 'iret', 'iretd',
 	'iretq', 'iretw', 'ja', 'jae', 'jb', 'jbe', 'jc', 'jcxz', 'je', 'jecxz', 'jg', 'jge', 'jl',
 	'jle', 'jmp', 'jmpe', 'jna', 'jnae', 'jnb', 'jnbe', 'jnc', 'jne', 'jng', 'jnge', 'jnl',
 	'jnle', 'jno', 'jnp', 'jns', 'jnz', 'jo', 'jp', 'jpe', 'jpo', 'jrcxz', 'js', 'jz',
@@ -343,7 +352,7 @@ our @instr_intel = (
 	'movmskps', 'movntdq', 'movntdqa', 'movnti', 'movntpd', 'movntps', 'movntq', 'movntsd',
 	'movntss', 'movq', 'movq2dq', 'movsb', 'movsd', 'movshdup', 'movsldup', 'movsq', 'movss',
 	'movsw', 'movsx', 'movsxd', 'movupd', 'movups', 'movzx', 'mpsadbw', 'mul', 'mulpd', 'mulps',
-	'mulsd', 'mulss', 'mwait', 'neg', 'nop', 'not', 'or', 'orpd', 'orps', 'out', 'outsb', 'outsd',
+	'mulsd', 'mulss', 'mulx', 'mwait', 'neg', 'nop', 'not', 'or', 'orpd', 'orps', 'out', 'outsb', 'outsd',
 	'outsw', 'pabsb', 'pabsd', 'pabsw', 'packssdw', 'packsswb', 'packusdw', 'packuswb', 'paddb',
 	'paddd', 'paddq', 'paddsb', 'paddsiw', 'paddsw', 'paddusb', 'paddusw', 'paddw', 'palignr',
 	'pand', 'pandn', 'pause', 'paveb', 'pavgb', 'pavgusb', 'pavgw', 'pblendvb', 'pblendw',
@@ -359,7 +368,7 @@ our @instr_intel = (
 	'pcomltw', 'pcomneqb', 'pcomneqd', 'pcomneqq', 'pcomnequb', 'pcomnequd', 'pcomnequq',
 	'pcomnequw', 'pcomneqw', 'pcomq', 'pcomtrueb', 'pcomtrued', 'pcomtrueq', 'pcomtrueub',
 	'pcomtrueud', 'pcomtrueuq', 'pcomtrueuw', 'pcomtruew', 'pcomub', 'pcomud', 'pcomuq', 'pcomuw',
-	'pcomw', 'pdistib', 'permpd', 'permps', 'pextrb', 'pextrd', 'pextrq', 'pextrw', 'pf2id',
+	'pcomw', 'pdep', 'pdistib', 'permpd', 'permps', 'pext', 'pextrb', 'pextrd', 'pextrq', 'pextrw', 'pf2id',
 	'pf2iw', 'pfacc', 'pfadd', 'pfcmpeq', 'pfcmpge', 'pfcmpgt', 'pfmax', 'pfmin', 'pfmul',
 	'pfnacc', 'pfpnacc', 'pfrcp', 'pfrcpit1', 'pfrcpit2', 'pfrcpv', 'pfrsqit1', 'pfrsqrt',
 	'pfrsqrtv', 'pfsub', 'pfsubr', 'phaddbd', 'phaddbq', 'phaddbw', 'phaddd', 'phadddq', 'phaddsw',
@@ -384,21 +393,21 @@ our @instr_intel = (
 	'pushw', 'pxor', 'rcl',	'rcpps', 'rcpss', 'rcr', 'rdfsbase', 'rdgsbase', 'rdm', 'rdmsr',
 	'rdmsrq', 'rdpmc', 'rdrand', 'rdshr', 'rdtsc', 'rdtscp', 'rep', 'repe', 'repne', 'repnz',
 	'repz', 'ret', 'retd', 'retf', 'retfd', 'retfq', 'retfw', 'retn', 'retnd', 'retnq', 'retnw', 'retq', 'retw',
-	'rol', 'ror', 'roundpd', 'roundps', 'roundsd', 'roundss', 'rsdc', 'rsldt', 'rsm',
-	'rsqrtps', 'rsqrtss', 'rsts', 'sahf', 'sal', 'salc', 'sar', 'sbb', 'scasb', 'scasd', 'scasq',
+	'rol', 'ror', 'rorx', 'roundpd', 'roundps', 'roundsd', 'roundss', 'rsdc', 'rsldt', 'rsm',
+	'rsqrtps', 'rsqrtss', 'rsts', 'sahf', 'sal', 'salc', 'sar', 'sarx', 'sbb', 'scasb', 'scasd', 'scasq',
 	'scasw', 'seta', 'setae', 'setalc', 'setb', 'setbe', 'setc', 'sete', 'setg', 'setge', 'setl',
 	'setle', 'setna', 'setnae', 'setnb', 'setnbe', 'setnc', 'setne', 'setng', 'setnge',
 	'setnl', 'setnle', 'setno', 'setnp', 'setns', 'setnz', 'seto', 'setp', 'setpe', 'setpo',
-	'sets', 'setz', 'sfence', 'sgdt', 'shl', 'shld', 'shr', 'shrd', 'shufpd', 'shufps', 'sidt',
+	'sets', 'setz', 'sfence', 'sgdt', 'shl', 'shld', 'shlx', 'shr', 'shrd', 'shrx', 'shufpd', 'shufps', 'sidt',
 	'skinit', 'sldt', 'slwpcb', 'smi', 'smint', 'smintold', 'smsw', 'sqrtpd', 'sqrtps', 'sqrtsd',
 	'sqrtss', 'stc', 'std', 'stgi', 'sti', 'stmxcsr', 'stosb', 'stosd', 'stosq', 'stosw', 'str', 'sub',
 	'subpd', 'subps', 'subsd', 'subss', 'svdc', 'svldt', 'svts', 'swapgs', 'syscall', 'sysenter',
-	'sysexit', 'sysexitq', 'sysret', 'sysretq', 'test', 'ucomisd', 'ucomiss', 'ud0',
-	'ud1', 'ud2', 'ud2a', 'ud2b', 'umov',
+	'sysexit', 'sysexitq', 'sysret', 'sysretq', 't1mskc', 'test', 'tzcnt', 'tzmsk',
+	'ucomisd', 'ucomiss', 'ud0', 'ud1', 'ud2', 'ud2a', 'ud2b', 'umov',
 	'unpckhpd', 'unpckhps', 'unpcklpd', 'unpcklps', 'vaddpd', 'vaddps', 'vaddsd', 'vaddss',
 	'vaddsubpd', 'vaddsubps', 'vaesdec', 'vaesdeclast', 'vaesenc', 'vaesenclast', 'vaesimc',
 	'vaeskeygenassist', 'vandnpd', 'vandnps', 'vandpd', 'vandps', 'vblendpd', 'vblendps',
-	'vblendvpd', 'vblendvps', 'vbroadcastf128', 'vbroadcastsd', 'vbroadcastss', 'vcmpeqpd',
+	'vblendvpd', 'vblendvps', 'vbroadcastf128', 'vbroadcasti128', 'vbroadcastsd', 'vbroadcastss', 'vcmpeqpd',
 	'vcmpeqps', 'vcmpeqsd', 'vcmpeqss', 'vcmpeq_ospd', 'vcmpeq_osps', 'vcmpeq_ossd',
 	'vcmpeq_osss', 'vcmpeq_uqpd', 'vcmpeq_uqps',
 	'vcmpeq_uqsd', 'vcmpeq_uqss', 'vcmpeq_uspd',
@@ -439,7 +448,7 @@ our @instr_intel = (
 	'vcvtpd2ps', 'vcvtph2ps', 'vcvtps2dq', 'vcvtps2pd', 'vcvtps2ph', 'vcvtsd2si', 'vcvtsd2ss',
 	'vcvtsi2sd', 'vcvtsi2ss', 'vcvtss2sd', 'vcvtss2si', 'vcvttpd2dq', 'vcvttps2dq', 'vcvttsd2si',
 	'vcvttss2si', 'vdivpd', 'vdivps', 'vdivsd', 'vdivss', 'vdppd', 'vdpps', 'verr', 'verw',
-	'vextractf128', 'vextractps', 'vfmadd123pd', 'vfmadd123ps', 'vfmadd123sd', 'vfmadd123ss',
+	'vextractf128', 'vextracti128', 'vextractps', 'vfmadd123pd', 'vfmadd123ps', 'vfmadd123sd', 'vfmadd123ss',
 	'vfmadd132pd', 'vfmadd132ps', 'vfmadd132sd', 'vfmadd132ss', 'vfmadd213pd', 'vfmadd213ps',
 	'vfmadd213sd', 'vfmadd213ss', 'vfmadd231pd', 'vfmadd231ps', 'vfmadd231sd', 'vfmadd231ss',
 	'vfmadd312pd', 'vfmadd312ps', 'vfmadd312sd', 'vfmadd312ss', 'vfmadd321pd', 'vfmadd321ps',
@@ -465,9 +474,10 @@ our @instr_intel = (
 	'vfnmsub213ss', 'vfnmsub231pd', 'vfnmsub231ps', 'vfnmsub231sd', 'vfnmsub231ss',
 	'vfnmsub312pd', 'vfnmsub312ps', 'vfnmsub312sd', 'vfnmsub312ss', 'vfnmsub321pd',
 	'vfnmsub321ps', 'vfnmsub321sd', 'vfnmsub321ss', 'vfnmsubpd', 'vfnmsubps', 'vfnmsubsd',
-	'vfnmsubss', 'vfrczpd', 'vfrczps', 'vfrczsd', 'vfrczss', 'vhaddpd', 'vhaddps', 'vhsubpd',
-	'vhsubps', 'vinsertf128', 'vinsertps', 'vlddqu', 'vldmxcsr', 'vldqqu', 'vmaskmovdqu',
-	'vmaskmovpd', 'vmaskmovps', 'vmaxpd', 'vmaxps', 'vmaxsd', 'vmaxss', 'vmcall', 'vmclear',
+	'vfnmsubss', 'vfrczpd', 'vfrczps', 'vfrczsd', 'vfrczss', 'vgatherdpd', 'vgatherdps',
+	'vgatherqpd', 'vgatherqps', 'vhaddpd', 'vhaddps', 'vhsubpd',
+	'vhsubps', 'vinsertf128', 'vinserti128', 'vinsertps', 'vlddqu', 'vldmxcsr', 'vldqqu', 'vmaskmovdqu',
+	'vmaskmovpd', 'vmaskmovps', 'vmaxpd', 'vmaxps', 'vmaxsd', 'vmaxss', 'vmcall', 'vmclear', 'vmfunc',
 	'vminpd', 'vminps', 'vminsd', 'vminss', 'vmlaunch', 'vmload', 'vmmcall', 'vmovapd', 'vmovaps',
 	'vmovd', 'vmovddup', 'vmovdqa', 'vmovdqu', 'vmovhlps', 'vmovhpd', 'vmovhps', 'vmovlhps',
 	'vmovlpd', 'vmovlps', 'vmovmskpd', 'vmovmskps', 'vmovntdq', 'vmovntdqa', 'vmovntpd',
@@ -476,8 +486,9 @@ our @instr_intel = (
 	'vmrun', 'vmsave', 'vmulpd', 'vmulps', 'vmulsd', 'vmulss', 'vmwrite', 'vmxoff', 'vmxon',
 	'vorpd', 'vorps', 'vpabsb', 'vpabsd', 'vpabsw', 'vpackssdw', 'vpacksswb', 'vpackusdw',
 	'vpackuswb', 'vpaddb', 'vpaddd', 'vpaddq', 'vpaddsb', 'vpaddsw', 'vpaddusb',
-	'vpaddusw', 'vpaddw', 'vpalignr', 'vpand', 'vpandn', 'vpavgb', 'vpavgw', 'vpblendvb',
-	'vpblendw', 'vpclmulhqhqdq', 'vpclmulhqhdq', 'vpclmulhqlqdq', 'vpclmullqhqdq', 'vpclmullqhdq', 'vpclmullqlqdq',
+	'vpaddusw', 'vpaddw', 'vpalignr', 'vpand', 'vpandn', 'vpavgb', 'vpavgw', 'vpblendd', 'vpblendvb',
+	'vpblendw', 'vpbroadcastb', 'vpbroadcastd', 'vpbroadcastq', 'vpbroadcastw',
+	'vpclmulhqhqdq', 'vpclmulhqhdq', 'vpclmulhqlqdq', 'vpclmullqhqdq', 'vpclmullqhdq', 'vpclmullqlqdq',
 	'vpclmulqdq', 'vpcmov', 'vpcmpeqb', 'vpcmpeqd', 'vpcmpeqq', 'vpcmpeqw', 'vpcmpestri',
 	'vpcmpestrm', 'vpcmpgtb', 'vpcmpgtd', 'vpcmpgtq', 'vpcmpgtw', 'vpcmpistri', 'vpcmpistrm',
 	'vpcomb', 'vpcomd', 'vpcomeqb', 'vpcomeqd', 'vpcomeqq', 'vpcomequb', 'vpcomequd', 'vpcomequq',
@@ -491,15 +502,18 @@ our @instr_intel = (
 	'vpcomnequq', 'vpcomnequw', 'vpcomneqw', 'vpcomq', 'vpcomtrueb', 'vpcomtrued', 'vpcomtrueq',
 	'vpcomtrueub', 'vpcomtrueud', 'vpcomtrueuq', 'vpcomtrueuw', 'vpcomtruew',
 	'vpcomub', 'vpcomud', 'vpcomuq', 'vpcomuw', 'vpcomw',
-	'vperm2f128', 'vpermil2pd', 'vpermil2ps', 'vpermilmo2pd', 'vpermilmo2ps', 'vpermilmz2pd',
-	'vpermilmz2ps', 'vpermilpd', 'vpermilps', 'vpermiltd2pd', 'vpermiltd2ps', 'vpextrb',
-	'vpextrd', 'vpextrq', 'vpextrw', 'vphaddbd', 'vphaddbq', 'vphaddbw', 'vphaddd',
+	'vperm2f128', 'vperm2i128', 'vpermd', 'vpermil2pd', 'vpermil2ps', 'vpermilmo2pd',
+	'vpermilmo2ps', 'vpermilmz2pd', 'vpermilmz2ps', 'vpermilpd', 'vpermilps', 'vpermpd',
+	'vpermps', 'vpermq', 'vpermiltd2pd', 'vpermiltd2ps', 'vpextrb',
+	'vpextrd', 'vpextrq', 'vpextrw', 'vpgatherdd', 'vpgatherdq', 'vpgatherqd', 'vpgatherqq',
+	'vphaddbd', 'vphaddbq', 'vphaddbw', 'vphaddd',
 	'vphadddq', 'vphaddsw', 'vphaddubd', 'vphaddubq', 'vphaddubw', 'vphaddubwd', 'vphaddudq',
 	'vphadduwd', 'vphadduwq', 'vphaddw', 'vphaddwd', 'vphaddwq', 'vphminposuw',
 	'vphsubbw', 'vphsubd', 'vphsubdq', 'vphsubsw', 'vphsubw', 'vphsubwd', 'vpinsrb',
 	'vpinsrd', 'vpinsrq', 'vpinsrw', 'vpmacsdd', 'vpmacsdqh', 'vpmacsdql', 'vpmacssdd',
 	'vpmacssdqh', 'vpmacssdql', 'vpmacsswd', 'vpmacssww', 'vpmacswd', 'vpmacsww',
-	'vpmadcsswd', 'vpmadcswd', 'vpmaddubsw', 'vpmaddwd', 'vpmaxsb', 'vpmaxsd', 'vpmaxsw',
+	'vpmadcsswd', 'vpmadcswd', 'vpmaddubsw', 'vpmaddwd', 'vpmaskmovd', 'vpmaskmovq',
+	'vpmaxsb', 'vpmaxsd', 'vpmaxsw',
 	'vpmaxub', 'vpmaxud', 'vpmaxuw', 'vpminsb', 'vpminsd', 'vpminsw', 'vpminub',
 	'vpminud', 'vpminuw', 'vpmovmskb', 'vpmovsxbd', 'vpmovsxbq', 'vpmovsxbw', 'vpmovsxdq',
 	'vpmovsxwd', 'vpmovsxwq', 'vpmovzxbd', 'vpmovzxbq', 'vpmovzxbw', 'vpmovzxdq',
@@ -507,19 +521,20 @@ our @instr_intel = (
 	'vpmullw', 'vpmuludq', 'vpor', 'vpperm', 'vprotb', 'vprotd', 'vprotq', 'vprotw',
 	'vpsadbw', 'vpshab', 'vpshad', 'vpshaq', 'vpshaw', 'vpshlb', 'vpshld', 'vpshlq',
 	'vpshlw', 'vpshufb', 'vpshufd', 'vpshufhw', 'vpshuflw', 'vpsignb', 'vpsignd', 'vpsignw',
-	'vpslld', 'vpslldq', 'vpsllq', 'vpsllw', 'vpsrad', 'vpsraw', 'vpsrld', 'vpsrldq',
-	'vpsrlq', 'vpsrlw', 'vpsubb', 'vpsubd', 'vpsubq', 'vpsubsb', 'vpsubsw', 'vpsubusb',
+	'vpslld', 'vpslldq', 'vpsllq', 'vpsllvd', 'vpsllvq', 'vpsllw', 'vpsrad', 'vpsravd',
+	'vpsraw', 'vpsrld', 'vpsrldq', 'vpsrlq', 'vpsrlvd', 'vpsrlvq', 'vpsrlw',
+	'vpsubb', 'vpsubd', 'vpsubq', 'vpsubsb', 'vpsubsw', 'vpsubusb',
 	'vpsubusw', 'vpsubw', 'vptest', 'vpunpckhbw', 'vpunpckhdq', 'vpunpckhqdq', 'vpunpckhwd',
 	'vpunpcklbw', 'vpunpckldq', 'vpunpcklqdq', 'vpunpcklwd', 'vpxor', 'vrcpps', 'vrcpss',
 	'vroundpd', 'vroundps', 'vroundsd', 'vroundss', 'vrsqrtps', 'vrsqrtss', 'vshufpd',
 	'vshufps', 'vsqrtpd', 'vsqrtps', 'vsqrtsd', 'vsqrtss', 'vstmxcsr', 'vsubpd',
 	'vsubps', 'vsubsd', 'vsubss', 'vtestpd', 'vtestps', 'vucomisd', 'vucomiss', 'vunpckhpd',
 	'vunpckhps', 'vunpcklpd', 'vunpcklps', 'vxorpd', 'vxorps', 'vzeroall', 'vzeroupper',
-	'wait', 'wbinvd', 'wrfsbase', 'wrgsbase', 'wrmsr', 'wrshr', 'wrmsrq', 'xadd', 'xbts',
-	'xchg', 'xcryptcbc', 'xcryptcfb',
-	'xcryptctr', 'xcryptecb', 'xcryptofb', 'xgetbv', 'xlat', 'xlatb', 'xor', 'xorpd',
-	'xorps', 'xrstor', 'xrstor64', 'xsave', 'xsave64', 'xsaveopt', 'xsaveopt64',
-	'xsetbv', 'xsha1', 'xsha256', 'xstore'
+	'wait', 'wbinvd', 'wrfsbase', 'wrgsbase', 'wrmsr', 'wrshr', 'wrmsrq', 'xabort',
+	'xacquire', 'xadd', 'xbegin', 'xbts', 'xchg', 'xcryptcbc', 'xcryptcfb',
+	'xcryptctr', 'xcryptecb', 'xcryptofb', 'xend', 'xgetbv', 'xlat', 'xlatb', 'xor', 'xorpd',
+	'xorps', 'xrelease', 'xrstor', 'xrstor64', 'xsave', 'xsave64', 'xsaveopt', 'xsaveopt64',
+	'xsetbv', 'xsha1', 'xsha256', 'xstore', 'xtest'
  		);
 
 # non-FPU instructions with suffixes in AT&T syntax
@@ -785,7 +800,6 @@ sub is_reg32 ( $ ) {
 
 =head2 is_addressable32_intel
 
- PRIVATE SUBROUTINE.
  Checks if the given string parameter is a valid x86 32-bit register which can be used
  	for addressing in Intel syntax.
  Returns 1 if yes.
@@ -803,7 +817,6 @@ sub is_addressable32_intel ( $ ) {
 
 =head2 is_addressable32_att
 
- PRIVATE SUBROUTINE.
  Checks if the given string parameter is a valid x86 32-bit register which can be used
  	for addressing in AT&T syntax.
  Returns 1 if yes.
@@ -821,7 +834,6 @@ sub is_addressable32_att ( $ ) {
 
 =head2 is_addressable32
 
- PRIVATE SUBROUTINE.
  Checks if the given string parameter is a valid x86 32-bit register which can be used
  	for addressing.
  Returns 1 if yes.
@@ -836,7 +848,6 @@ sub is_addressable32 ( $ ) {
 
 =head2 is_r32_in64_intel
 
- PRIVATE SUBROUTINE.
  Checks if the given string parameter is a valid x86 32-bit register which can only be used
  	in 64-bit mode (that is, checks if the given string parameter is a 32-bit
  	subregister of a 64-bit register).
@@ -855,7 +866,6 @@ sub is_r32_in64_intel ( $ ) {
 
 =head2 is_r32_in64_att
 
- PRIVATE SUBROUTINE.
  Checks if the given string parameter is a valid x86 32-bit register in Intel syntax
  	which can only be used in 64-bit mode (that is, checks if the given string
  	parameter is a 32-bit subregister of a 64-bit register).
@@ -874,7 +884,6 @@ sub is_r32_in64_att ( $ ) {
 
 =head2 is_r32_in64
 
- PRIVATE SUBROUTINE.
  Checks if the given string parameter is a valid x86 32-bit register in AT&T syntax
  	which can only be used in 64-bit mode (that is, checks if the given string
  	parameter is a 32-bit subregister of a 64-bit register).
@@ -3164,7 +3173,6 @@ sub add_percent ( @ ) {
 
 =head2 is_att_suffixed_instr
 
- PRIVATE SUBROUTINE.
  Tells if the given instruction is suffixed in AT&T syntax.
  Returns 1 if yes
 
@@ -3181,7 +3189,6 @@ sub is_att_suffixed_instr ( $ ) {
 
 =head2 is_att_suffixed_instr_fpu
 
- PRIVATE SUBROUTINE.
  Tells if the given FPU non-integer instruction is suffixed in AT&T syntax.
  Returns 1 if yes
 
@@ -3198,7 +3205,6 @@ sub is_att_suffixed_instr_fpu ( $ ) {
 
 =head2 add_att_suffix_instr
 
- PRIVATE SUBROUTINE.
  Creates the AT&T syntax instruction array from the Intel-syntax array.
  Returns the new array.
 
@@ -3715,6 +3721,10 @@ sub conv_intel_addr_to_att ( $ ) {
 		$par =~ s/\b($i)\b/%$1/;
 	}
 
+	foreach my $r (@regs_intel) {
+
+		$par =~ s/\%\%$r\b/\%$r/gi;
+	}
 	return $par;
 }
 
@@ -4087,7 +4097,10 @@ sub conv_intel_instr_to_att ( $ ) {
 
 		$par =~ s/\b$r\b/\%$r/gi;
 	}
-	$par =~ s/\%\%/\%/gio;
+	foreach my $r (@regs_intel) {
+
+		$par =~ s/\%\%$r\b/\%$r/gi;
+	}
 
 	# (REP**: adding the end of line char)
 	$par =~ s/^\s*(rep[enz]{0,2})\s+/\t$1\n\t/io;
