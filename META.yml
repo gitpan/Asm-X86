@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Asm-X86
-version:             0.13
+version:             0.14
 abstract:            List of instructions and registers of Intel x86-compatible processors,
 license:             ~
 author:              

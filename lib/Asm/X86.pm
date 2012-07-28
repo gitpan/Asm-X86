@@ -42,11 +42,11 @@ Asm::X86 - List of instructions and registers of Intel x86-compatible processors
 
 =head1 VERSION
 
-Version 0.13
+Version 0.14
 
 =cut
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 =head1 DESCRIPTION
 
@@ -279,8 +279,8 @@ our @regs_att = ( @regs8_att, @regs16_att, @regs32_att,
 =cut
 
 our @instr_intel = (
-	'aaa', 'aad', 'aam', 'aas', 'adc', 'add', 'addpd', 'addps', 'addsd', 'addss', 'addsubpd',
-	'addsubps', 'aesdec', 'aesdeclast', 'aesenc', 'aesenclast', 'aesimc', 'aeskeygenassist',
+	'aaa', 'aad', 'aam', 'aas', 'adc', 'adcx', 'add', 'addpd', 'addps', 'addsd', 'addss', 'addsubpd',
+	'addsubps', 'adox', 'aesdec', 'aesdeclast', 'aesenc', 'aesenclast', 'aesimc', 'aeskeygenassist',
 	'and', 'andn', 'andnpd', 'andnps', 'andpd', 'andps', 'arpl', 'bb0_reset',
 	'bb1_reset', 'bextr', 'blcfill', 'blci', 'blcic', 'blcmsk', 'blcs',
 	'blendpd', 'blendps', 'blendvpd', 'blendvps', 'blsfill', 'blsi', 'blsic', 'blsmsk', 'blsr',
@@ -391,7 +391,7 @@ our @instr_intel = (
 	'punpckhdq', 'punpckhqdq', 'punpckhwd', 'punpcklbw', 'punpckldq', 'punpcklqdq', 'punpcklwd',
 	'push', 'pusha', 'pushad', 'pushaw', 'pushd', 'pushf', 'pushfd', 'pushfq', 'pushfw', 'pushq',
 	'pushw', 'pxor', 'rcl',	'rcpps', 'rcpss', 'rcr', 'rdfsbase', 'rdgsbase', 'rdm', 'rdmsr',
-	'rdmsrq', 'rdpmc', 'rdrand', 'rdshr', 'rdtsc', 'rdtscp', 'rep', 'repe', 'repne', 'repnz',
+	'rdmsrq', 'rdpmc', 'rdrand', 'rdseed', 'rdshr', 'rdtsc', 'rdtscp', 'rep', 'repe', 'repne', 'repnz',
 	'repz', 'ret', 'retd', 'retf', 'retfd', 'retfq', 'retfw', 'retn', 'retnd', 'retnq', 'retnw', 'retq', 'retw',
 	'rol', 'ror', 'rorx', 'roundpd', 'roundps', 'roundsd', 'roundss', 'rsdc', 'rsldt', 'rsm',
 	'rsqrtps', 'rsqrtss', 'rsts', 'sahf', 'sal', 'salc', 'sar', 'sarx', 'sbb', 'scasb', 'scasd', 'scasq',
