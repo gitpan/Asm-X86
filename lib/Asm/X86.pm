@@ -42,11 +42,11 @@ Asm::X86 - List of instructions and registers of Intel x86-compatible processors
 
 =head1 VERSION
 
-Version 0.14
+Version 0.15
 
 =cut
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 =head1 DESCRIPTION
 
@@ -285,7 +285,7 @@ our @instr_intel = (
 	'bb1_reset', 'bextr', 'blcfill', 'blci', 'blcic', 'blcmsk', 'blcs',
 	'blendpd', 'blendps', 'blendvpd', 'blendvps', 'blsfill', 'blsi', 'blsic', 'blsmsk', 'blsr',
 	'bound', 'bsf', 'bsr', 'bswap', 'bt', 'btc', 'btr', 'bts', 'bzhi', 'call', 'cbw',
-	'cdq', 'cdqe', 'clc', 'cld', 'clflush', 'clgi', 'cli', 'clts',
+	'cdq', 'cdqe', 'clac', 'clc', 'cld', 'clflush', 'clgi', 'cli', 'clts',
 	'cmc', 'cmova', 'cmovae', 'cmovb', 'cmovbe', 'cmovc', 'cmove', 'cmovg', 'cmovge',
 	'cmovl', 'cmovle', 'cmovna', 'cmovnae', 'cmovnb', 'cmovnbe', 'cmovnc',
 	'cmovne', 'cmovng', 'cmovnge', 'cmovnl', 'cmovnle', 'cmovno', 'cmovnp',
@@ -400,7 +400,7 @@ our @instr_intel = (
 	'setnl', 'setnle', 'setno', 'setnp', 'setns', 'setnz', 'seto', 'setp', 'setpe', 'setpo',
 	'sets', 'setz', 'sfence', 'sgdt', 'shl', 'shld', 'shlx', 'shr', 'shrd', 'shrx', 'shufpd', 'shufps', 'sidt',
 	'skinit', 'sldt', 'slwpcb', 'smi', 'smint', 'smintold', 'smsw', 'sqrtpd', 'sqrtps', 'sqrtsd',
-	'sqrtss', 'stc', 'std', 'stgi', 'sti', 'stmxcsr', 'stosb', 'stosd', 'stosq', 'stosw', 'str', 'sub',
+	'sqrtss', 'stac', 'stc', 'std', 'stgi', 'sti', 'stmxcsr', 'stosb', 'stosd', 'stosq', 'stosw', 'str', 'sub',
 	'subpd', 'subps', 'subsd', 'subss', 'svdc', 'svldt', 'svts', 'swapgs', 'syscall', 'sysenter',
 	'sysexit', 'sysexitq', 'sysret', 'sysretq', 't1mskc', 'test', 'tzcnt', 'tzmsk',
 	'ucomisd', 'ucomiss', 'ud0', 'ud1', 'ud2', 'ud2a', 'ud2b', 'umov',
