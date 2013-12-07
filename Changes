@@ -1,5 +1,10 @@
 Revision history for Asm-X86
 
+2013-12-07	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.16
+	* X86.pm: Updated the register list with YMM registers.
+
 2012-09-16	Bogdan Drozdowski <bogdandr@op.pl>
 
 	* Version 0.15

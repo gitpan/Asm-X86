@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8 + 11*8 + 6 + 21;
+use Test::More tests => 8 + 12*8 + 6 + 21;
 use Asm::X86 qw(
 	@regs8_intel @regs16_intel @segregs_intel @regs32_intel @regs64_intel
 	@regs_mm_intel @regs_intel @regs_fpu_intel
@@ -118,6 +118,15 @@ is ( is_reg64_intel ("fS"), 0, "fS is a 64-bit register" );
 is ( is_reg_mm_intel("gs"), 0, "gs is a multimedia register" );
 is ( is_segreg_intel("cs"), 1, "cs is a segment register" );
 is ( is_reg_fpu_intel("ds"), 0, "ds is an FPU register" );
+
+is ( is_reg_intel   ("ymm0"), 1, "ymm0 is a register" );
+is ( is_reg8_intel  ("ymm0"), 0, "ymm0 is an 8-bit register" );
+is ( is_reg16_intel ("ymm0"), 0, "ymm0 is a 16-bit register" );
+is ( is_reg32_intel ("ymm0"), 0, "ymm0 is a 32-bit register" );
+is ( is_reg64_intel ("ymm0"), 0, "ymm0 is a 64-bit register" );
+is ( is_reg_mm_intel("ymm0"), 1, "ymm0 is a multimedia register" );
+is ( is_segreg_intel("ymm0"), 0, "ymm0 is a segment register" );
+is ( is_reg_fpu_intel("ymm0"), 0, "ymm0 is an FPU register" );
 
 is ( is_segreg_intel("cs"), 1, "cs is a segment register" );
 is ( is_segreg_intel("ds"), 1, "ds is a segment register" );

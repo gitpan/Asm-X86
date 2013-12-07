@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8 + 11*8 + 6 + 21;
+use Test::More tests => 8 + 12*8 + 6 + 21;
 use Asm::X86 qw(
 	@regs8_att @regs16_att @segregs_att @regs32_att @regs64_att
 	@regs_mm_att @regs_att @regs_fpu_att
@@ -125,6 +125,15 @@ is ( is_segreg_att("\%Es"), 1, "Es is a segment register" );
 is ( is_segreg_att("\%ss"), 1, "ss is a segment register" );
 is ( is_segreg_att("\%fS"), 1, "fS is a segment register" );
 is ( is_segreg_att("\%gs"), 1, "gs is a segment register" );
+
+is ( is_reg_att   ("\%ymm0"), 1, "ymm0 is a register" );
+is ( is_reg8_att  ("\%ymm0"), 0, "ymm0 is an 8-bit register" );
+is ( is_reg16_att ("\%ymm0"), 0, "ymm0 is a 16-bit register" );
+is ( is_reg32_att ("\%ymm0"), 0, "ymm0 is a 32-bit register" );
+is ( is_reg64_att ("\%ymm0"), 0, "ymm0 is a 64-bit register" );
+is ( is_reg_mm_att("\%ymm0"), 1, "ymm0 is a multimedia register" );
+is ( is_segreg_att("\%ymm0"), 0, "ymm0 is a segment register" );
+is ( is_reg_fpu_att("\%ymm0"), 0, "ymm0 is an FPU register" );
 
 is ( is_reg_att   ("\%axmm6"), 0, "axmm6 is a register" );
 is ( is_reg_att   ("\%cax"), 0, "cax is a register" );
