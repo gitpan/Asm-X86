@@ -1,5 +1,13 @@
 Revision history for Asm-X86
 
+2014-01-11	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.20
+	* X86.pm: Updated the register and instruction list from NASM version
+	  2.11. Added more XMM and YMM registers, added ZMM and opmask
+	  (K[0-7]) registers. Added subroutines to check for opmask registers.
+	  Upgraded tests.
+
 2013-12-07	Bogdan Drozdowski <bogdandr@op.pl>
 
 	* Version 0.16
