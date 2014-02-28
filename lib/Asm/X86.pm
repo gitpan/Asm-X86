@@ -45,11 +45,11 @@ Asm::X86 - List of instructions and registers of Intel x86-compatible processors
 
 =head1 VERSION
 
-Version 0.20
+Version 0.21
 
 =cut
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 =head1 DESCRIPTION
 
@@ -323,7 +323,7 @@ our @instr_intel = (
 	'blendpd', 'blendps', 'blendvpd', 'blendvps', 'blsfill', 'blsi', 'blsic', 'blsmsk', 'blsr',
 	'bndcl', 'bndcn', 'bndcu', 'bndldx', 'bndmk', 'bndmov', 'bndstx',
 	'bound', 'bsf', 'bsr', 'bswap', 'bt', 'btc', 'btr', 'bts', 'bzhi', 'call', 'cbw',
-	'cdq', 'cdqe', 'clac', 'clc', 'cld', 'clflush', 'clgi', 'cli', 'clts',
+	'cdq', 'cdqe', 'clac', 'clc', 'cld', 'clflush', 'clflushopt', 'clgi', 'cli', 'clts',
 	'cmc', 'cmova', 'cmovae', 'cmovb', 'cmovbe', 'cmovc', 'cmove', 'cmovg', 'cmovge',
 	'cmovl', 'cmovle', 'cmovna', 'cmovnae', 'cmovnb', 'cmovnbe', 'cmovnc',
 	'cmovne', 'cmovng', 'cmovnge', 'cmovnl', 'cmovnle', 'cmovno', 'cmovnp',
@@ -623,7 +623,8 @@ our @instr_intel = (
 	'wait', 'wbinvd', 'wrfsbase', 'wrgsbase', 'wrmsr', 'wrshr', 'wrmsrq', 'xabort',
 	'xacquire', 'xadd', 'xbegin', 'xbts', 'xchg', 'xcryptcbc', 'xcryptcfb',
 	'xcryptctr', 'xcryptecb', 'xcryptofb', 'xend', 'xgetbv', 'xlat', 'xlatb', 'xor', 'xorpd',
-	'xorps', 'xrelease', 'xrstor', 'xrstor64', 'xsave', 'xsave64', 'xsaveopt', 'xsaveopt64',
+	'xorps', 'xrelease', 'xrstor', 'xrstor64', 'xrstors', 'xrstors64', 'xsave', 'xsave64',
+	'xsavec', 'xsavec64', 'xsaveopt', 'xsaveopt64', 'xsaves', 'xsaves64',
 	'xsetbv', 'xsha1', 'xsha256', 'xstore', 'xtest'
  		);
 
