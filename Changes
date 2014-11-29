@@ -1,5 +1,11 @@
 Revision history for Asm-X86
 
+2014-11-15	Bogdan Drozdowski <bogdandr@op.pl>
+
+	* Version 0.22
+	* X86.pm: Updated the register and instruction list from NASM version
+	  2.11.06.
+
 2014-03-01	Bogdan Drozdowski <bogdandr@op.pl>
 
 	* Version 0.21
